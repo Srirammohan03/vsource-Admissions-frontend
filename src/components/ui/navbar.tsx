@@ -1,9 +1,7 @@
-import { useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
+import React, { useEffect, useState, useRef } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Link } from "react-router-dom";
-import { Image } from "@radix-ui/react-avatar";
 
 /* ---------------------------- MENU STRUCTURE ---------------------------- */
 type Uni = { name: string; to: string };
@@ -48,7 +46,7 @@ const CATEGORIES: Category[] = [
   },
 ];
 
-/* --------------------------------- HEADER --------------------------------- */
+/* --------------------------------- NAVBAR --------------------------------- */
 export function Navbar() {
   const location = useLocation();
 
@@ -101,18 +99,28 @@ export function Navbar() {
     }
   }, [isOpen]);
 
-  const isActive = (href: string) =>
-    href === "/"
+  // Close on Escape
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  const isActive = (path: string) =>
+    path === "/"
       ? location.pathname === "/"
-      : location.pathname === href || location.pathname.startsWith(href + "/");
+      : location.pathname === path || location.pathname.startsWith(path + "/");
+
   const linkCls = (active: boolean) =>
     cn(
       "font-medium tracking-wide px-1 transition-colors",
       active
-        ? "text-brand-red"
+        ? "text-red-600"
         : isScrolled
-        ? "text-black hover:text-brand-red"
-        : "text-white hover:text-brand-red"
+        ? "text-black hover:text-red-600"
+        : "text-white hover:text-red-600"
     );
 
   const currentCategory = CATEGORIES.find((c) => c.key === tab)!;
@@ -125,7 +133,7 @@ export function Navbar() {
       )}
     >
       {/* top row */}
-      <div className="w-full max-w-[1400px] mx-auto px-6  h-20 flex items-center justify-between gap-4">
+      <div className="w-full max-w-[1400px] mx-auto px-6 h-20 flex items-center justify-between gap-4">
         {/* Logos */}
         <Link to="/" className="flex items-center gap-2 relative z-20">
           <img
@@ -159,7 +167,10 @@ export function Navbar() {
             <button
               type="button"
               onClick={() => setOpenDropdown((v) => !v)}
-              className={cn("flex items-center gap-1", linkCls(false))}
+              className={cn(
+                "flex items-center gap-1",
+                linkCls(isActive("/mbbs-abroad"))
+              )}
             >
               MBBS-ABROAD <ChevronDown className="h-4 w-4" />
             </button>
@@ -167,12 +178,12 @@ export function Navbar() {
             {/* Dropdown panel (centered & always above header) */}
             <div
               className={cn(
-                "fixed left-1/2 mt-3  w-[720px] max-w-[95vw] grid grid-cols-[220px_1fr] rounded-2xl border border-gray-100 bg-white shadow-lg transition-all duration-200 z-50",
+                "fixed left-2/3 -translate-x-1/2 mt-3 w-[720px] max-w-[95vw] grid grid-cols-[220px_1fr] rounded-2xl border border-gray-100 bg-white shadow-lg transition-all duration-200 z-50",
                 openDropdown ? "opacity-100 visible" : "opacity-0 invisible"
               )}
-              style={{ top: "5rem" }} // match your header height (h-20 = 80px = 5rem)
+              style={{ top: "5rem" }}
             >
-              {/* Left tabs with flags */}
+              {/* Left tabs */}
               <div className="p-3 space-y-2">
                 {CATEGORIES.map((c) => (
                   <button
@@ -183,8 +194,8 @@ export function Navbar() {
                     className={cn(
                       "w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm font-semibold transition-colors",
                       tab === c.key
-                        ? "text-brand-blue bg-brand-gray/40"
-                        : "text-gray-700 hover:bg-gray-100 hover:text-brand-red"
+                        ? "text-blue-500 bg-gray-50"
+                        : "text-gray-700 hover:bg-gray-100 hover:text-red-600"
                     )}
                   >
                     {c.label}
@@ -199,7 +210,12 @@ export function Navbar() {
                     <li key={u.to}>
                       <Link
                         to={u.to}
-                        className="block px-3 py-2 hover:bg-gray-100 hover:text-brand-red rounded-md text-gray-900 transition-colors text-sm md:text-base"
+                        className={cn(
+                          "block px-3 py-2 rounded-md text-sm md:text-base transition-colors",
+                          isActive(u.to)
+                            ? "text-red-600"
+                            : "text-gray-900 hover:bg-gray-100 hover:text-red-600"
+                        )}
                       >
                         {u.name}
                       </Link>
@@ -210,9 +226,14 @@ export function Navbar() {
             </div>
           </div>
 
-          <Link to="/360-view" className={linkCls(isActive("/360-view"))}>
+          <a
+            href="https://vsourceoverseas.com/360View/"
+            target="_blank"
+            rel="noreferrer"
+            className={linkCls(isActive("/360-view"))}
+          >
             360_VIEW
-          </Link>
+          </a>
           <Link to="/gallery" className={linkCls(isActive("/gallery"))}>
             GALLERY
           </Link>
@@ -236,7 +257,7 @@ export function Navbar() {
         <div className="absolute bottom-0 left-0 w-full h-[3px] bg-gray-200">
           <div
             className="h-[3px] bg-brand-red transition-all duration-75"
-            style={{ width: `${scrollProgress}%` }}
+            style={{ width: `${scrollProgress}% ` }}
           />
         </div>
       )}
@@ -250,32 +271,26 @@ export function Navbar() {
         >
           {/* top bar */}
           <div className="w-full border-b">
-            <div className="container h-20 flex items-center justify-between">
+            <div className="w-full max-w-[1400px] mx-auto px-6 h-20 flex items-center justify-between">
               <Link
                 to="/"
                 onClick={() => setIsOpen(false)}
                 className="flex items-center gap-3"
               >
-                <Image
+                <img
                   src="/images/vsourcess.png"
                   alt="VSource Logo"
-                  width={120}
-                  height={48}
                   className="h-12 w-auto object-contain"
-                  priority
                 />
-                <Image
+                <img
                   src="/images/20 years logo-01.png"
                   alt="20 Years"
-                  width={120}
-                  height={48}
                   className="h-12 w-auto object-contain"
-                  priority
                 />
               </Link>
               <button
                 aria-label="Close menu"
-                className="text-gray-800 hover:text-brand-red"
+                className="text-gray-800 hover:text-red-600"
                 onClick={() => setIsOpen(false)}
               >
                 <X className="h-6 w-6" />
@@ -285,15 +300,15 @@ export function Navbar() {
 
           {/* scrollable body */}
           <div className="flex-1 overflow-y-auto overscroll-contain">
-            <div className="container py-4 space-y-3">
+            <div className="w-full max-w-[1400px] mx-auto px-6 py-4 space-y-3">
               <Link
                 to="/"
                 onClick={() => setIsOpen(false)}
                 className={cn(
                   "block py-2 text-lg font-medium transition-colors",
                   isActive("/")
-                    ? "text-brand-red"
-                    : "text-gray-800 hover:text-brand-red"
+                    ? "text-red-600"
+                    : "text-gray-800 hover:text-red-600"
                 )}
               >
                 Home
@@ -304,8 +319,8 @@ export function Navbar() {
                 className={cn(
                   "block py-2 text-lg font-medium transition-colors",
                   isActive("/about")
-                    ? "text-brand-red"
-                    : "text-gray-800 hover:text-brand-red"
+                    ? "text-red-600"
+                    : "text-gray-800 hover:text-red-600"
                 )}
               >
                 About
@@ -328,8 +343,8 @@ export function Navbar() {
                             className={cn(
                               "block py-2 text-sm transition-colors",
                               isActive(u.to)
-                                ? "text-brand-red"
-                                : "text-gray-800 hover:text-brand-red"
+                                ? "text-red-600"
+                                : "text-gray-800 hover:text-red-600"
                             )}
                           >
                             {u.name}
@@ -341,26 +356,28 @@ export function Navbar() {
                 </div>
               </MobileAccordion>
 
-              <Link
-                to="/360-view"
+              <a
+                href="https://vsourceoverseas.com/360View/"
+                target="_blank"
+                rel="noreferrer"
                 onClick={() => setIsOpen(false)}
                 className={cn(
                   "block py-2 text-lg font-medium transition-colors",
                   isActive("/360-view")
-                    ? "text-brand-red"
-                    : "text-gray-800 hover:text-brand-red"
+                    ? "text-red-600"
+                    : "text-gray-800 hover:text-red-600"
                 )}
               >
                 360 View
-              </Link>
+              </a>
               <Link
                 to="/gallery"
                 onClick={() => setIsOpen(false)}
                 className={cn(
                   "block py-2 text-lg font-medium transition-colors",
                   isActive("/gallery")
-                    ? "text-brand-red"
-                    : "text-gray-800 hover:text-brand-red"
+                    ? "text-red-600"
+                    : "text-gray-800 hover:text-red-600"
                 )}
               >
                 Gallery
@@ -371,8 +388,8 @@ export function Navbar() {
                 className={cn(
                   "block py-2 text-lg font-medium transition-colors",
                   isActive("/contact")
-                    ? "text-brand-red"
-                    : "text-gray-800 hover:text-brand-red"
+                    ? "text-red-600"
+                    : "text-gray-800 hover:text-red-600"
                 )}
               >
                 Contact

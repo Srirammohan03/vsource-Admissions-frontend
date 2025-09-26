@@ -22,6 +22,12 @@ import Navbar from "./components/ui/navbar";
 import AboutSection from "./pages/AboutSection";
 import AboutPage from "./pages/AboutPage";
 import { Toaster } from "sonner";
+import UniversityGeorgia from "./pages/University-Pages/UniversityGeorgia";
+import UniversityKenWalker from "./pages/University-Pages/UniversityKenWalker";
+import UniversityTbilisiStateMedical from "./pages/University-Pages/UniversityTbilisiStateMedical";
+import UniversityIliaState from "./pages/University-Pages/UniversityIliaState";
+import UniversityAkakiTsereteliState from "./pages/University-Pages/UniversityAkakiTsereteliState";
+import UniversityBelgorodStateNationalResearch from "./pages/University-Pages/UniversityBelgorodStateNationalResearch";
 const queryClient = new QueryClient();
 
 const AppContent = () => {
@@ -79,7 +85,34 @@ const AppContent = () => {
 
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<Contact />} />
-            {/* <Route path= "/mbbs-abroad/georgia/university-of-georgia" element={</>}/> */}
+            <Route
+              path="/mbbs-abroad/georgia/university-of-georgia"
+              element={<UniversityGeorgia />}
+            />
+            <Route
+              path="/mbbs-abroad/georgia/ken-walker-international-university"
+              element={<UniversityKenWalker />}
+            />
+            <Route
+              path="/mbbs-abroad/georgia/tbilisi-state-medical-university"
+              element={<UniversityTbilisiStateMedical />}
+            />
+            <Route
+              path="/mbbs-abroad/georgia/tbilisi-state-medical-university"
+              element={<UniversityTbilisiStateMedical />}
+            />
+            <Route
+              path="/mbbs-abroad/georgia/ilia-state-university"
+              element={<UniversityIliaState />}
+            />
+            <Route
+              path="/mbbs-abroad/georgia/akaki-tsereteli-state-university"
+              element={<UniversityAkakiTsereteliState />}
+            />
+            <Route
+              path="/mbbs-abroad/russia/belgorod-state-national-research-university"
+              element={<UniversityBelgorodStateNationalResearch />}
+            />
 
             <Route path="/meeting" element={<GoVirtual />} />
             <Route path="*" element={<NotFound />} />
