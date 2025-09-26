@@ -1,130 +1,113 @@
-import React, { useEffect, useState, useRef } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Link } from "react-router-dom";
+import { Image } from "@radix-ui/react-avatar";
 
-type SectionItem = { name: string; path: string };
-type Section = { heading: string; items: SectionItem[] };
+/* ---------------------------- MENU STRUCTURE ---------------------------- */
+type Uni = { name: string; to: string };
+type Category = { key: "georgia" | "russia"; label: string; items: Uni[] };
 
-const MBBS_SECTIONS: Section[] = [
+const CATEGORIES: Category[] = [
   {
-    heading: "MBBS IN GEORGIA",
+    key: "georgia",
+    label: "MBBS IN GEORGIA",
     items: [
       {
         name: "The University Of Georgia",
-        path: "/mbbs-abroad/georgia/university-of-georgia",
+        to: "/mbbs-abroad/georgia/university-of-georgia",
       },
       {
         name: "Ken Walker International University",
-        path: "/mbbs-abroad/georgia/ken-walker-international-university",
+        to: "/mbbs-abroad/georgia/ken-walker-international-university",
       },
       {
         name: "Tbilisi State Medical University",
-        path: "/mbbs-abroad/georgia/tbilisi-state-medical-university",
+        to: "/mbbs-abroad/georgia/tbilisi-state-medical-university",
       },
       {
         name: "Ilia State University",
-        path: "/mbbs-abroad/georgia/ilia-state-university",
+        to: "/mbbs-abroad/georgia/ilia-state-university",
       },
       {
         name: "Akaki Tsereteli State University",
-        path: "/mbbs-abroad/georgia/akaki-tsereteli-state-university",
+        to: "/mbbs-abroad/georgia/akaki-tsereteli-state-university",
       },
     ],
   },
   {
-    heading: "MBBS IN RUSSIA",
+    key: "russia",
+    label: "MBBS IN RUSSIA",
     items: [
       {
         name: "Belgorod State National Research University",
-        path: "/mbbs-abroad/russia/belgorod-state-national-research-university",
+        to: "/mbbs-abroad/russia/belgorod-state-national-research-university",
       },
     ],
   },
 ];
 
-type NavNode =
-  | { type: "link"; name: string; path: string }
-  | { type: "dropdown"; name: string; sections: Section[] };
-
-const NAV_STRUCTURE: NavNode[] = [
-  { type: "link", name: "Home", path: "/" },
-  { type: "link", name: "About", path: "/about" },
-  { type: "dropdown", name: "MBBS-ABROAD", sections: MBBS_SECTIONS },
-  { type: "link", name: "360_VIEW", path: "/360-view" },
-  { type: "link", name: "GALLERY", path: "/gallery" },
-  { type: "link", name: "CONTACT", path: "/contact" },
-];
-
-function Navbar() {
+/* --------------------------------- HEADER --------------------------------- */
+export function Navbar() {
   const location = useLocation();
-  const [isOpen, setIsOpen] = useState(false);
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-  const [openMobileDropdown, setOpenMobileDropdown] = useState<string | null>(
-    null
-  );
+
+  const [isOpen, setIsOpen] = useState(false); // mobile
+  const [openDropdown, setOpenDropdown] = useState(false); // desktop MBBS dropdown
+  const [tab, setTab] = useState<Category["key"]>("georgia"); // active left tab in dropdown
   const [isScrolled, setIsScrolled] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const ddRef = useRef<HTMLDivElement | null>(null);
 
+  // Scroll effects
   useEffect(() => {
-    const onScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-      const top = window.scrollY;
-      const docH = document.documentElement.scrollHeight - window.innerHeight;
-      setScrollProgress(docH > 0 ? (top / docH) * 100 : 0);
-    };
-    onScroll();
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  useEffect(() => {
-    setIsOpen(false);
-    setOpenDropdown(null);
-    setOpenMobileDropdown(null);
-  }, [location.pathname]);
-
-  useEffect(() => {
-    const onDocClick = (e: MouseEvent) => {
-      if (ddRef.current && !ddRef.current.contains(e.target as Node)) {
-        setOpenDropdown(null);
-      }
-    };
-    document.addEventListener("mousedown", onDocClick);
-    return () => document.removeEventListener("mousedown", onDocClick);
-  }, []);
-
-  useEffect(() => {
-    const body = document.body;
-    if (isOpen) {
-      const prev = body.style.overflow;
-      body.style.overflow = "hidden";
-      return () => {
-        body.style.overflow = prev;
+    if (typeof window !== "undefined") {
+      const onScroll = () => {
+        setIsScrolled(window.scrollY > 10);
+        const top = window.scrollY;
+        const docH = document.documentElement.scrollHeight - window.innerHeight;
+        setScrollProgress(docH > 0 ? (top / docH) * 100 : 0);
       };
+      onScroll();
+      window.addEventListener("scroll", onScroll);
+      return () => window.removeEventListener("scroll", onScroll);
+    }
+  }, []);
+
+  // Click-away (desktop dropdown)
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const onDocClick = (e: MouseEvent) => {
+        if (ddRef.current && !ddRef.current.contains(e.target as Node)) {
+          setOpenDropdown(false);
+        }
+      };
+      document.addEventListener("mousedown", onDocClick);
+      return () => document.removeEventListener("mousedown", onDocClick);
+    }
+  }, []);
+
+  // Lock body scroll when mobile menu open
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const body = document.body;
+      if (isOpen) {
+        const prev = body.style.overflow;
+        body.style.overflow = "hidden";
+        return () => {
+          body.style.overflow = prev;
+        };
+      }
     }
   }, [isOpen]);
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setIsOpen(false);
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, []);
-
-  const isPathActive = (path: string) => {
-    if (path === "/") return location.pathname === "/";
-    return location.pathname === path || location.pathname.startsWith(path);
-  };
-
-  const isDropdownActive = (sections: Section[]) =>
-    sections.some((sec) => sec.items.some((it) => isPathActive(it.path)));
-
-  const getLinkClass = (active: boolean) =>
+  const isActive = (href: string) =>
+    href === "/"
+      ? location.pathname === "/"
+      : location.pathname === href || location.pathname.startsWith(href + "/");
+  const linkCls = (active: boolean) =>
     cn(
-      "font-medium transition-colors px-1",
+      "font-medium tracking-wide px-1 transition-colors",
       active
         ? "text-brand-red"
         : isScrolled
@@ -132,14 +115,18 @@ function Navbar() {
         : "text-white hover:text-brand-red"
     );
 
+  const currentCategory = CATEGORIES.find((c) => c.key === tab)!;
+
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 w-full z-50 transition-all duration-300 py-4",
+        "fixed top-0 left-0 w-full z-40 transition-all duration-300 py-2",
         isScrolled ? "bg-white shadow-md" : "bg-transparent"
       )}
     >
-      <div className="w-full max-w-[1400px] mx-auto px-4 flex justify-between items-center h-20">
+      {/* top row */}
+      <div className="w-full max-w-[1400px] mx-auto px-6  h-20 flex items-center justify-between gap-4">
+        {/* Logos */}
         <Link to="/" className="flex items-center gap-2 relative z-20">
           <img
             alt="Vsource Logo"
@@ -153,88 +140,88 @@ function Navbar() {
           />
         </Link>
 
-        <nav className="hidden md:flex items-center space-x-4 lg:space-x-6">
-          {NAV_STRUCTURE.map((node) => {
-            if (node.type === "link") {
-              return (
-                <Link
-                  key={node.name}
-                  to={node.path}
-                  className={getLinkClass(isPathActive(node.path))}
-                >
-                  {node.name}
-                </Link>
-              );
-            }
-            const active = isDropdownActive(node.sections);
-            return (
-              <div
-                key={node.name}
-                className="relative group"
-                ref={ddRef}
-                onMouseEnter={() => setOpenDropdown(node.name)}
-                onMouseLeave={() => setOpenDropdown(null)}
-              >
-                <button
-                  className={cn(
-                    "flex items-center space-x-1",
-                    getLinkClass(active)
-                  )}
-                  onClick={() =>
-                    setOpenDropdown((v) => (v === node.name ? null : node.name))
-                  }
-                  type="button"
-                >
-                  <span>{node.name}</span>
-                  <ChevronDown className="h-4 w-4" />
-                </button>
-                <div
-                  className={cn(
-                    "absolute left-1/2 -translate-x-1/2 top-full mt-3 w-[720px] max-w-[90vw] grid grid-cols-2 gap-6 p-6 rounded-2xl border border-gray-100 bg-white shadow-lg transition-all duration-200 z-50",
-                    openDropdown === node.name
-                      ? "opacity-100 visible"
-                      : "opacity-0 invisible"
-                  )}
-                >
-                  {node.sections.map((section) => (
-                    <div key={section.heading}>
-                      <h4 className="mb-2 text-xs font-semibold uppercase text-gray-500">
-                        {section.heading}
-                      </h4>
-                      <div className="space-y-2">
-                        {section.items.map((d) => {
-                          return (
-                            <Link
-                              key={d.name}
-                              to={d.path}
-                              className={cn(
-                                "flex items-center gap-2 rounded-md px-2 py-1.5 text-sm",
-                                isPathActive(d.path)
-                                  ? "text-brand-red"
-                                  : "text-black hover:bg-gray-100 hover:text-brand-red"
-                              )}
-                            >
-                              {d.name}
-                            </Link>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
-        </nav>
-        {scrollProgress > 0 && (
-          <div className="absolute bottom-0 left-0 w-full h-[3px] bg-gray-200 z-30">
-            <div
-              className="h-[3px] bg-brand-red transition-all duration-75"
-              style={{ width: `${scrollProgress}%` }}
-            />
-          </div>
-        )}
+        {/* Desktop nav */}
+        <nav className="hidden md:flex items-center gap-6">
+          <Link to="/" className={linkCls(isActive("/"))}>
+            Home
+          </Link>
+          <Link to="/about" className={linkCls(isActive("/about"))}>
+            About
+          </Link>
 
+          {/* MBBS-ABROAD DROPDOWN (two-pane style) */}
+          <div
+            className="relative"
+            ref={ddRef}
+            onMouseEnter={() => setOpenDropdown(true)}
+            onMouseLeave={() => setOpenDropdown(false)}
+          >
+            <button
+              type="button"
+              onClick={() => setOpenDropdown((v) => !v)}
+              className={cn("flex items-center gap-1", linkCls(false))}
+            >
+              MBBS-ABROAD <ChevronDown className="h-4 w-4" />
+            </button>
+
+            {/* Dropdown panel (centered & always above header) */}
+            <div
+              className={cn(
+                "fixed left-1/2 mt-3  w-[720px] max-w-[95vw] grid grid-cols-[220px_1fr] rounded-2xl border border-gray-100 bg-white shadow-lg transition-all duration-200 z-50",
+                openDropdown ? "opacity-100 visible" : "opacity-0 invisible"
+              )}
+              style={{ top: "5rem" }} // match your header height (h-20 = 80px = 5rem)
+            >
+              {/* Left tabs with flags */}
+              <div className="p-3 space-y-2">
+                {CATEGORIES.map((c) => (
+                  <button
+                    key={c.key}
+                    onMouseEnter={() => setTab(c.key)}
+                    onFocus={() => setTab(c.key)}
+                    onClick={() => setTab(c.key)}
+                    className={cn(
+                      "w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm font-semibold transition-colors",
+                      tab === c.key
+                        ? "text-brand-blue bg-brand-gray/40"
+                        : "text-gray-700 hover:bg-gray-100 hover:text-brand-red"
+                    )}
+                  >
+                    {c.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Right list */}
+              <div className="p-3">
+                <ul className="divide-y">
+                  {currentCategory.items.map((u) => (
+                    <li key={u.to}>
+                      <Link
+                        to={u.to}
+                        className="block px-3 py-2 hover:bg-gray-100 hover:text-brand-red rounded-md text-gray-900 transition-colors text-sm md:text-base"
+                      >
+                        {u.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <Link to="/360-view" className={linkCls(isActive("/360-view"))}>
+            360_VIEW
+          </Link>
+          <Link to="/gallery" className={linkCls(isActive("/gallery"))}>
+            GALLERY
+          </Link>
+          <Link to="/contact" className={linkCls(isActive("/contact"))}>
+            CONTACT
+          </Link>
+        </nav>
+
+        {/* Mobile toggle */}
         <button
           className={cn(isScrolled ? "text-black" : "text-white", "md:hidden")}
           onClick={() => setIsOpen((v) => !v)}
@@ -244,24 +231,46 @@ function Navbar() {
         </button>
       </div>
 
+      {/* scroll progress bar */}
+      {scrollProgress > 0 && (
+        <div className="absolute bottom-0 left-0 w-full h-[3px] bg-gray-200">
+          <div
+            className="h-[3px] bg-brand-red transition-all duration-75"
+            style={{ width: `${scrollProgress}%` }}
+          />
+        </div>
+      )}
+
+      {/* Mobile menu (full-screen) */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-[60] md:hidden bg-white flex flex-col"
+          className="fixed inset-0 z-30 md:hidden bg-white flex flex-col"
           role="dialog"
           aria-modal="true"
         >
+          {/* top bar */}
           <div className="w-full border-b">
-            <div className="w-full max-w-[1400px] mx-auto px-4 h-20 flex items-center justify-between">
-              <Link to="/" className="flex items-center gap-2 relative z-20">
-                <img
-                  alt="Vsource Logo"
-                  className="h-16 md:h-20 w-auto object-contain rounded-xl"
+            <div className="container h-20 flex items-center justify-between">
+              <Link
+                to="/"
+                onClick={() => setIsOpen(false)}
+                className="flex items-center gap-3"
+              >
+                <Image
                   src="/images/vsourcess.png"
+                  alt="VSource Logo"
+                  width={120}
+                  height={48}
+                  className="h-12 w-auto object-contain"
+                  priority
                 />
-                <img
-                  alt="Vsource Logo"
-                  className="h-16 md:h-20 w-auto object-contain rounded-xl"
+                <Image
                   src="/images/20 years logo-01.png"
+                  alt="20 Years"
+                  width={120}
+                  height={48}
+                  className="h-12 w-auto object-contain"
+                  priority
                 />
               </Link>
               <button
@@ -274,96 +283,140 @@ function Navbar() {
             </div>
           </div>
 
+          {/* scrollable body */}
           <div className="flex-1 overflow-y-auto overscroll-contain">
-            <div className="w-full max-w-[1400px] mx-auto px-4 py-4 space-y-3">
-              {NAV_STRUCTURE.map((node) => {
-                if (node.type === "link") {
-                  return (
-                    <Link
-                      key={node.name}
-                      to={node.path}
-                      className={cn(
-                        "block py-2 text-lg font-medium",
-                        isPathActive(node.path)
-                          ? "text-brand-red"
-                          : "text-gray-800 hover:text-brand-red"
-                      )}
-                      onClick={() => setIsOpen(false)}
-                    >
-                      {node.name}
-                    </Link>
-                  );
-                }
-                const open = openMobileDropdown === node.name;
-                return (
-                  <div
-                    key={node.name}
-                    className="rounded-2xl border border-gray-200"
-                  >
-                    <button
-                      type="button"
-                      className="w-full flex items-center justify-between px-4 py-3 font-semibold text-gray-900"
-                      onClick={() =>
-                        setOpenMobileDropdown(open ? null : node.name)
-                      }
-                    >
-                      {node.name}
-                      <ChevronDown
-                        className={cn(
-                          "h-4 w-4 transition-transform",
-                          open && "rotate-180"
-                        )}
-                      />
-                    </button>
-                    <div
-                      className={cn(
-                        "grid transition-[grid-template-rows] duration-300 ease-in-out",
-                        open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
-                      )}
-                    >
-                      <div className="overflow-hidden">
-                        <div className="px-4 pb-4 space-y-4">
-                          {node.sections.map((section) => (
-                            <div key={section.heading}>
-                              <h4 className="mt-2 mb-1 text-xs font-semibold uppercase text-gray-500">
-                                {section.heading}
-                              </h4>
-                              <div className="space-y-1">
-                                {section.items.map((d) => {
-                                  return (
-                                    <Link
-                                      key={d.name}
-                                      to={d.path}
-                                      className={cn(
-                                        "flex items-center gap-2 py-2 text-sm",
-                                        isPathActive(d.path)
-                                          ? "text-brand-red"
-                                          : "text-gray-800 hover:text-brand-red"
-                                      )}
-                                      onClick={() => {
-                                        setIsOpen(false);
-                                        setOpenMobileDropdown(null);
-                                      }}
-                                    >
-                                      {d.name}
-                                    </Link>
-                                  );
-                                })}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
+            <div className="container py-4 space-y-3">
+              <Link
+                to="/"
+                onClick={() => setIsOpen(false)}
+                className={cn(
+                  "block py-2 text-lg font-medium transition-colors",
+                  isActive("/")
+                    ? "text-brand-red"
+                    : "text-gray-800 hover:text-brand-red"
+                )}
+              >
+                Home
+              </Link>
+              <Link
+                to="/about"
+                onClick={() => setIsOpen(false)}
+                className={cn(
+                  "block py-2 text-lg font-medium transition-colors",
+                  isActive("/about")
+                    ? "text-brand-red"
+                    : "text-gray-800 hover:text-brand-red"
+                )}
+              >
+                About
+              </Link>
+
+              {/* Accordion for MBBS-ABROAD */}
+              <MobileAccordion label="MBBS-ABROAD">
+                <div className="space-y-4">
+                  {CATEGORIES.map((c) => (
+                    <div key={c.key}>
+                      <div className="mt-2 mb-1 text-xs font-semibold uppercase text-gray-500">
+                        {c.label}
+                      </div>
+                      <div className="space-y-1">
+                        {c.items.map((u) => (
+                          <Link
+                            key={u.to}
+                            to={u.to}
+                            onClick={() => setIsOpen(false)}
+                            className={cn(
+                              "block py-2 text-sm transition-colors",
+                              isActive(u.to)
+                                ? "text-brand-red"
+                                : "text-gray-800 hover:text-brand-red"
+                            )}
+                          >
+                            {u.name}
+                          </Link>
+                        ))}
                       </div>
                     </div>
-                  </div>
-                );
-              })}
+                  ))}
+                </div>
+              </MobileAccordion>
+
+              <Link
+                to="/360-view"
+                onClick={() => setIsOpen(false)}
+                className={cn(
+                  "block py-2 text-lg font-medium transition-colors",
+                  isActive("/360-view")
+                    ? "text-brand-red"
+                    : "text-gray-800 hover:text-brand-red"
+                )}
+              >
+                360 View
+              </Link>
+              <Link
+                to="/gallery"
+                onClick={() => setIsOpen(false)}
+                className={cn(
+                  "block py-2 text-lg font-medium transition-colors",
+                  isActive("/gallery")
+                    ? "text-brand-red"
+                    : "text-gray-800 hover:text-brand-red"
+                )}
+              >
+                Gallery
+              </Link>
+              <Link
+                to="/contact"
+                onClick={() => setIsOpen(false)}
+                className={cn(
+                  "block py-2 text-lg font-medium transition-colors",
+                  isActive("/contact")
+                    ? "text-brand-red"
+                    : "text-gray-800 hover:text-brand-red"
+                )}
+              >
+                Contact
+              </Link>
+
               <div className="h-10" />
             </div>
           </div>
         </div>
       )}
     </header>
+  );
+}
+
+/* --------------------------- MobileAccordion --------------------------- */
+function MobileAccordion({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="rounded-2xl border border-gray-200">
+      <button
+        type="button"
+        className="w-full flex items-center justify-between px-4 py-3 font-semibold text-gray-900"
+        onClick={() => setOpen((v) => !v)}
+      >
+        {label}
+        <ChevronDown
+          className={cn("h-4 w-4 transition-transform", open && "rotate-180")}
+        />
+      </button>
+      <div
+        className={cn(
+          "grid transition-[grid-template-rows] duration-300 ease-in-out",
+          open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+        )}
+      >
+        <div className="overflow-hidden px-4 pb-4">{children}</div>
+      </div>
+    </div>
   );
 }
 

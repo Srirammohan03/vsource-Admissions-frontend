@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -22,6 +21,7 @@ import DelayedPopup from "./components/DelayedPopup";
 import Navbar from "./components/ui/navbar";
 import AboutSection from "./pages/AboutSection";
 import AboutPage from "./pages/AboutPage";
+import { Toaster } from "sonner";
 const queryClient = new QueryClient();
 
 const AppContent = () => {
@@ -79,8 +79,7 @@ const AppContent = () => {
 
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<Contact />} />
-
-            <Route path="/education-loan" element={<EducationLoan />} />
+            {/* <Route path= "/mbbs-abroad/georgia/university-of-georgia" element={</>}/> */}
 
             <Route path="/meeting" element={<GoVirtual />} />
             <Route path="*" element={<NotFound />} />
