@@ -1,14 +1,62 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import SectionTitle from "@/components/SectionTitle";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
-import { Phone, Mail, MapPin, Clock } from "lucide-react";
+import { Phone, Mail, MapPin, Clock, MessageSquare } from "lucide-react";
 
 const ContactPage = () => {
   const location = useLocation();
+  const [selectedService, setSelectedService] = useState("");
 
+  // Scroll to top on page load and handle URL query params
   useEffect(() => {
     window.scrollTo(0, 0);
+
+    // Get program from URL query parameter
+    const params = new URLSearchParams(location.search);
+    const program = params.get("program");
+
+    if (program) {
+      setSelectedService(program);
+    }
   }, [location]);
+
+  const branches = [
+    {
+      id: 1,
+      city: "Hyderabad",
+      address: "123 Educational Lane, Knowledge City, Hyderabad 500001",
+      phone: "+91 123 456 7890",
+      email: "hyderabad@vsource.com",
+      hours: "Mon-Sat: 10:00 AM - 7:00 PM",
+    },
+    {
+      id: 2,
+      city: "Delhi",
+      address: "456 Academic Avenue, Study District, Delhi 110001",
+      phone: "+91 234 567 8901",
+      email: "delhi@vsource.com",
+      hours: "Mon-Sat: 10:00 AM - 7:00 PM",
+    },
+    {
+      id: 3,
+      city: "Mumbai",
+      address: "789 Campus Road, Education Quarter, Mumbai 400001",
+      phone: "+91 345 678 9012",
+      email: "mumbai@vsource.com",
+      hours: "Mon-Sat: 10:00 AM - 7:00 PM",
+    },
+  ];
+
+  // List of available services
+  const services = [
+    { value: "", label: "Select a service" },
+    { value: "Study Abroad Counseling", label: "Study Abroad Counseling" },
+    { value: "Visa Assistance", label: "Visa Assistance" },
+    { value: "University Selection", label: "University Selection" },
+    { value: "Scholarship Guidance", label: "Scholarship Guidance" },
+    { value: "Other", label: "Other" },
+  ];
 
   return (
     <>
@@ -38,8 +86,7 @@ const ContactPage = () => {
                 hours: "10am to 8pm",
                 locationUrl:
                   "https://www.google.com/maps/place/VSource/@17.3692602,78.519197,17z/data=!3m1!4b1!4m5!3m4!1s0x3bcb98f7d166d455:0x1d4049b98242ba23!8m2!3d17.3692602!4d78.5213857",
-                imageUrl:
-                  "https://lh3.googleusercontent.com/p/AF1QipMKzDcJJiP9PWWv6TVLljm-1EWGx9fu1R6Fb0qW=w408-h272-k-no",
+                imageUrl: "/images/branches/Dilsukhnagar.jpg",
               },
               {
                 city: "Ameerpet",
@@ -48,10 +95,8 @@ const ContactPage = () => {
                 phone: "+91 91217 11119",
                 email: "Support@vsourceadmissions.com",
                 hours: "10am to 8pm",
-                locationUrl:
-                  "https://www.google.com/maps/place/Vsource+Overseas+Consultants+Pvt+Ltd",
-                imageUrl:
-                  "https://res.cloudinary.com/dch00stdh/image/upload/f_auto,q_auto/v169763103616/gipsmkbbewuew7kh690d.jpg",
+                locationUrl: "https://maps.app.goo.gl/wfy4bB9sGaUVBtKf7",
+                imageUrl: "/images/branches/Ameerpet.webp",
               },
               {
                 city: "KPHB - JNTU",
@@ -60,8 +105,7 @@ const ContactPage = () => {
                 phone: "+91 91217 11119",
                 email: "Support@vsourceadmissions.com",
                 hours: "10am to 8pm",
-                locationUrl:
-                  "https://www.google.com/maps/place/Vsource+Overseas+Consultants+Pvt+Ltd",
+                locationUrl: "https://maps.app.goo.gl/YEPNx4qtezQ4SCjTA",
                 imageUrl: "/images/branches/jntu branch.jpg",
               },
               {
@@ -71,8 +115,7 @@ const ContactPage = () => {
                 phone: "+91 91217 11119",
                 email: "Support@vsourceadmissions.com",
                 hours: "10am to 8pm",
-                locationUrl:
-                  "https://www.google.com/maps/place/VSource+Educational+Consultants+Pvt+Ltd",
+                locationUrl: "https://maps.app.goo.gl/8S3veFkys9eqbEPJ8",
                 imageUrl: "/images/branches/vijaywada branch.jpeg",
               },
               {
@@ -84,8 +127,7 @@ const ContactPage = () => {
                 hours: "10am to 8pm",
                 locationUrl:
                   "https://www.google.com/maps/place/Annapurna+Nilayam/@17.7260105,83.3154943,15z/data=!4m10!1m2!2m1!1sAnnapurna+Nilayam+2nd+Floor,+Opp+Hotel+Kamat,+Lawson's+Bay+Colony,+Visakhapatnam,+AP.!3m6!1s0x3a3943003fa4956b:0xc818085c92e6c50c!8m2!3d17.7260105!4d83.3345487!15sClVBbm5hcHVybmEgTmlsYXlhbSAybmQgRmxvb3IsIE9wcCBIb3RlbCBLYW1hdCwgTGF3c29uJ3MgQmF5IENvbG9ueSwgVmlzYWtoYXBhdG5hbSwgQVAukgESYXBhcnRtZW50X2J1aWxkaW5nqgHPARABKlQiUGFubmFwdXJuYSBuaWxheWFtIDJuZCBmbG9vciBvcHAgaG90ZWwga2FtYXQgbGF3c29uJ3MgYmF5IGNvbG9ueSB2aXNha2hhcGF0bmFtIGFwKAAyHxABIhvuhInUa5mDOARt2VWc3lqHzM6Cr3G5c1dyBg0yVBACIlBhbm5hcHVybmEgbmlsYXlhbSAybmQgZmxvb3Igb3BwIGhvdGVsIGthbWF0IGxhd3NvbidzIGJheSBjb2xvbnkgdmlzYWtoYXBhdG5hbSBhcOABAA!16s%2Fg%2F11vxmf0vlw?entry=ttu&g_ep=EgoyMDI1MDUyMS4wIKXMDSoASAFQAw%3D%3D",
-                imageUrl:
-                  "https://res.cloudinary.com/dch00stdh/image/upload/f_auto,q_auto/v1763103829/p9rbcd5ihlkr3wxn3x4k.jpg",
+                imageUrl: "/images/branches/vizga.webp",
               },
               {
                 city: "Tirupathi",
@@ -94,8 +136,7 @@ const ContactPage = () => {
                 phone: "+91 91217 11119",
                 email: "Support@vsourceadmissions.com",
                 hours: "10am to 8pm",
-                locationUrl:
-                  "https://www.google.com/maps/place/Vsource+tirupathi",
+                locationUrl: "https://maps.app.goo.gl/oEAfuChXdMDMHt1H6",
                 imageUrl: "/images/branches/tirupati branch.jpeg",
               },
 
@@ -106,10 +147,8 @@ const ContactPage = () => {
                 phone: "+91 91217 11119",
                 email: "Support@vsourceadmissions.com",
                 hours: "10am to 8pm",
-                locationUrl:
-                  "https://www.google.com/maps/place/VSOURCE+BENGALURU",
-                imageUrl:
-                  "https://res.cloudinary.com/dch00stdh/image/upload/f_auto,q_auto/v1763103616/eyhy0tiintaiqqd3d7jq.jpg",
+                locationUrl: "https://maps.app.goo.gl/7Jkr9TLvTZmor3sY9",
+                imageUrl: "/images/branches/bangular.webp",
               },
             ].map((branch, index) => (
               <AnimateOnScroll key={index} delay={index * 100}>

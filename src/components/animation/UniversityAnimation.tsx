@@ -14,7 +14,7 @@ const CarouselSlider: React.FC = () => {
       caption: "The University Of Georgia",
       description:
         "One of Georgia's leading medical universities, offering internationally recognized MBBS programs with modern infrastructure and global exposure.",
-      ctaHref: "/mbbs-abroad/georgia/:slug",
+      ctaHref: "/mbbs-abroad/georgia/the-university-of-georgia",
       ctaText: "Explore More",
       color: "#BBACAF",
     },
@@ -68,7 +68,8 @@ const CarouselSlider: React.FC = () => {
       caption: "Belgorod State National Research University",
       description:
         "A top-ranked Russian university focusing on innovation and advanced medical training, recognized by WHO and MCI for its MBBS program.",
-      ctaHref: "/mbbs-abroad/russia/:slug",
+      ctaHref:
+        "/mbbs-abroad/russia/belgorod-state-national-research-university",
       ctaText: "Explore More",
       color: "#977F6D",
     },
@@ -173,12 +174,12 @@ const CarouselSlider: React.FC = () => {
                 </div>
 
                 <div className="content-buttons  gap-[5px] mt-5">
-                  <Link
+                  {/* <Link
                     className="border-none bg-red-600 text-white  font-medium p-[10px] rounded-sm"
                     to={item.ctaHref}
                   >
                     Explore More
-                  </Link>
+                  </Link> */}
                 </div>
               </div>
             </div>

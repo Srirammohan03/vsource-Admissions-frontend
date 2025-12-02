@@ -6,21 +6,21 @@ const stats = [
     value: 100000,
     suffix: "+",
     label: "Students Empowered",
-    icon: "https://res.cloudinary.com/dch00stdh/image/upload/f_auto,q_auto/v1762770342/hat_phpbum.gif",
+    icon: "/images/icons/hat.gif",
   },
   {
     id: 2,
     value: 20,
     suffix: "+",
     label: "Years of\nExperience",
-    icon: "https://res.cloudinary.com/dch00stdh/image/upload/f_auto,q_auto/v1762770342/handshake_ewjcsn.gif",
+    icon: "/images/icons/handshake.gif",
   },
   {
     id: 3,
     value: 10,
     suffix: "+",
     label: "Study Destinations",
-    icon: "https://res.cloudinary.com/dch00stdh/image/upload/f_auto,q_auto/v1762770342/earth_vhzkro.gif",
+    icon: "/images/icons/earth.gif",
   },
 ];
 
@@ -118,7 +118,7 @@ const AboutSection = () => {
           {/* RIGHT SIDE (IMAGE + QUOTE) */}
           <div className="right" data-aos="flip-left" data-aos-duration="2000">
             <img
-              src="https://res.cloudinary.com/dch00stdh/image/upload/f_auto,q_auto/v1762754020/imgi_5_founder_pcglp8.jpg"
+              src="/images/icons/founder.webp"
               className="founder-img"
               alt="Founder"
             />
