@@ -7,21 +7,21 @@ const stats = [
     value: 100000,
     suffix: "+",
     label: "Students Empowered",
-    icon: "https://res.cloudinary.com/dch00stdh/image/upload/f_auto,q_auto/v1762770342/hat_phpbum.gif",
+    icon: "/images/icons/hat.gif",
   },
   {
     id: 2,
     value: 20,
     suffix: "+",
     label: "Years of\nExperience",
-    icon: "https://res.cloudinary.com/dch00stdh/image/upload/f_auto,q_auto/v1762770342/handshake_ewjcsn.gif",
+    icon: "/images/icons/handshake.gif",
   },
   {
     id: 3,
     value: 10,
     suffix: "+",
     label: "Study Destinations",
-    icon: "https://res.cloudinary.com/dch00stdh/image/upload/f_auto,q_auto/v1762770342/earth_vhzkro.gif",
+    icon: "/images/icons/earth.gif",
   },
 ];
 
@@ -71,7 +71,7 @@ const AboutSection: React.FC = () => {
     >
       <div className="flex flex-col lg:flex-row justify-between items-center mx-auto ">
         {/* LEFT TEXT SECTION */}
-        <div className="basis-[50%] min-w-[50%]">
+        <div className="basis-[60%] min-w-[60%]">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1e73be] mb-3 sm:mb-4">
             About Vsource Admissions
           </h2>
@@ -107,12 +107,12 @@ const AboutSection: React.FC = () => {
         </div>
 
         {/* RIGHT IMAGE/QUOTE SECTION */}
-        <div className="basis-[50%] min-w-[50%] flex items-center justify-center">
+        <div className=" flex items-center justify-center">
           <div className="flex flex-col items-center text-center rounded-xl p-3 sm:p-4">
             <img
-              src="https://res.cloudinary.com/dch00stdh/image/upload/f_auto,q_auto/v1762754020/imgi_5_founder_pcglp8.jpg"
+              src="/images/icons/founder.webp"
               alt="Founder"
-              className="rounded-lg w-full max-w-md object-cover aspect-[4/3] sm:aspect-[3/2]"
+              className="rounded-lg w-full max-w-md object-cover "
             />
             <p className="mt-3 sm:mt-4 text-sm md:text-base text-gray-700 italic max-w-prose">
               <strong className="text-xl">“</strong>

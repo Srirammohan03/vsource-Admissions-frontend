@@ -410,7 +410,7 @@ function UniversityLayout({ university }: Props) {
                         {s?.hostel ? fmt(Number(s?.hostel)) : "—"}
                       </td>
                       <td className="px-4 py-3">
-                        ?{s?.insurance ? fmt(Number(s?.insurance)) : "—"}
+                        {s?.insurance ? fmt(Number(s?.insurance)) : "—"}
                       </td>
                       <td className="px-4 py-3">
                         {s?.other ? fmt(Number(s?.other)) : "—"}
@@ -597,7 +597,7 @@ function UniversityLayout({ university }: Props) {
                 }`}
               >
                 <img
-                  src={img?.url}
+                  src={`https://backend.vsourceoverseas.com${img?.url}`}
                   alt="Hostel"
                   className="w-full h-full object-cover transition group-hover:scale-105 duration-300"
                   loading="lazy"
@@ -629,7 +629,7 @@ function UniversityLayout({ university }: Props) {
                 }`}
               >
                 <img
-                  src={img?.url}
+                  src={`https://backend.vsourceoverseas.com${img?.url}`}
                   alt="Campus"
                   className="w-full h-full object-cover transition group-hover:scale-105 duration-300"
                   loading="lazy"
@@ -656,7 +656,7 @@ function UniversityLayout({ university }: Props) {
               x
             </button>
             <img
-              src={studentLifeImage}
+              src={`https://backend.vsourceoverseas.com${studentLifeImage}`}
               className="w-full h-auto rounded-lg"
               alt="preview"
             />
@@ -688,7 +688,7 @@ function UniversityLayout({ university }: Props) {
               } ${i === 3 ? "col-span-2" : ""}`}
             >
               <img
-                src={img.url}
+                src={`https://backend.vsourceoverseas.com${img.url} `}
                 alt={`gallery-${i}`}
                 className="w-full h-full object-cover group-hover:scale-105 transition duration-300 rounded-lg"
               />
@@ -712,7 +712,7 @@ function UniversityLayout({ university }: Props) {
                 <X className="h-4 w-4" />
               </button>
               <img
-                src={currentImg || ""}
+                src={`https://backend.vsourceoverseas.com${currentImg || ""}`}
                 className="rounded-lg w-full max-h-[90vh] object-contain"
               />
             </div>
@@ -735,7 +735,9 @@ function UniversityLayout({ university }: Props) {
     <div className="bg-gray-50 text-slate-900 min-h-screen">
       <section
         className="relative bg-cover bg-center bg-no-repeat h-[320px] sm:h-[400px] flex items-center justify-center"
-        style={{ backgroundImage: `url('${university?.banner?.url}')` }}
+        style={{
+          backgroundImage: `url('https://backend.vsourceoverseas.com${university?.banner?.url}')`,
+        }}
       >
         <div className="absolute inset-0 bg-black/60"></div>
         <div className="relative z-10 text-center text-white max-w-screen-sm px-4">
@@ -754,7 +756,7 @@ function UniversityLayout({ university }: Props) {
             <div className="lg:col-span-2 flex flex-col gap-6">
               <div className="relative w-full overflow-hidden rounded-2xl bg-slate-200 h-48 sm:h-64 md:h-80 lg:h-full">
                 <img
-                  src={university?.about_img?.url}
+                  src={`https://backend.vsourceoverseas.com${university?.about_img?.url}`}
                   alt="University campus"
                   className="h-full w-full object-cover"
                 />

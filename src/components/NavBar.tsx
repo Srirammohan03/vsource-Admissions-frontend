@@ -70,7 +70,7 @@ function Navbar() {
             src="/images/vsourcess.webp"
           />
           <img
-            src="https://res.cloudinary.com/dch00stdh/image/upload/f_auto,q_auto,w_200,c_limit,dpr_auto/v1762706239/nav-badge20years_re4asz.webp"
+            src="/images/20 years logo-01.webp"
             alt="20 Years Logo"
             className="h-16 md:h-20 w-auto object-contain drop-shadow-md"
           />

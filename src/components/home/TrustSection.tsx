@@ -12,32 +12,28 @@ interface Service {
 
 const services: Service[] = [
   {
-    backgroundImage:
-      "https://res.cloudinary.com/dch00stdh/image/upload/v1762706926/Dedicated_Counsellor_mypjj8.webp",
+    backgroundImage: "/images/Dedicated_Counsellor.webp",
     icon: <User size={40} color="#ffffff" />,
     title: "Expert Consultation",
     description:
       "We assigned a high professional Expert Counselors, gives thorough knowledge on the MBBS offered by ABROAD Universities",
   },
   {
-    backgroundImage:
-      "https://res.cloudinary.com/dch00stdh/image/upload/v1762706925/accommodation-food_suedpf.webp",
+    backgroundImage: "/images/accommodation-food.webp",
     icon: <GraduationCap size={40} color="#ffffffff" />,
     title: "Admission & Documentation",
     description:
       "We Provide Admission with all Documents in order to ensure the success of Admission & Visa Process",
   },
   {
-    backgroundImage:
-      "https://res.cloudinary.com/dch00stdh/image/upload/v1762706929/Loan_Assistance_u5idg4.webp",
+    backgroundImage: "/images/admission-documentation.webp",
     icon: <Utensils size={40} color="#ffffffff" />,
     title: "Accommodation & INDIAN Food",
     description:
       "Separate Hostel for Boy & Girls with INDIAN Food 24/7 CCTV surveillance to ensure student security",
   },
   {
-    backgroundImage:
-      "https://res.cloudinary.com/dch00stdh/image/upload/v1762706937/pre-post-landing_rk8hka.webp",
+    backgroundImage: "/images/Pre_&_Post_Landing_Support.webp",
     icon: <MapPin size={40} color="#ffffffff" />,
     title: "Pre & Post Landing Support",
     description:
