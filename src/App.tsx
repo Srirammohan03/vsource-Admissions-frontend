@@ -49,19 +49,13 @@ const AppContent = () => {
   const [showForm, setShowForm] = useState(false);
   const [showFormIcon, setShowFormIcon] = useState(false);
 
+  // SHOW POPUP AFTER 3 SECONDS
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY;
-      const docHeight =
-        document.documentElement.scrollHeight - window.innerHeight;
+    const timer = setTimeout(() => {
+      setShowForm(true);
+    }, 3000);
 
-      if (docHeight > 0 && scrollTop / docHeight >= 0.2) {
-        setShowForm(true);
-        window.removeEventListener("scroll", handleScroll);
-      }
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => clearTimeout(timer);
   }, []);
 
   // AOS init
